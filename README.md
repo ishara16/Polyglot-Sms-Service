@@ -130,17 +130,18 @@ Install:
 
 ---
 
-# Running the System
+# DEMONSTRATION
 
-## 1. Start Kafka
+## Step 1. Start Kafka
 
+Open terminal inside Kafka folder:
 ```bash
 bin/windows/kafka-server-start.bat config/server.properties
 ```
 
 ---
 
-## 2. Start Redis
+## Step 2. Start Redis
 
 ```bash
 redis-server
@@ -148,7 +149,7 @@ redis-server
 
 ---
 
-## 3. Start MongoDB
+## Step 3. Start MongoDB
 
 ```bash
 mongod --dbpath "C:\Users\Lenovo\Projects\smsService\data\db"
@@ -156,40 +157,76 @@ mongod --dbpath "C:\Users\Lenovo\Projects\smsService\data\db"
 
 ---
 
-## 4. Start Go Service
+## Step 4. Start Go SMS Store Service
 
+Open terminal:
 ```bash
 cd sms-store
 go run .
 ```
 
+Expected Output:
+```bash
+Connected to MongoDB
+Server running on port 8081
+```
 ---
 
-## 5. Start Java Service
+## Step 5. Start Java SMS Sender Service
 
+Open another terminal:
 ```bash
 cd sms-sender
 ./mvnw.cmd spring-boot:run
 ```
-
+Expected Output:
+```bash
+Started SmsSenderApplication
+```
 ---
 
-# Testing APIs
+## Step 6. Send SMS Request
 
-## Send SMS
-
+Open another terminal:
 ```bash
 curl -X POST http://localhost:8080/v1/sms/send \
 -H "Content-Type: application/json" \
 -d "{\"userId\":\"user123\",\"phoneNumber\":\"9999999999\",\"message\":\"Hello World\"}"
 ```
 
----
+Expected Output:
+```bash
+SMS processed with status: SUCCESS
+```
+(or FAIL)
 
-## Retrieve Messages
 
+## Step 7. Verify GoLang Service Consumed Kafka Event
+
+Check Go service terminal.
+Expected Logs:
+```bash
+Received message: {"userId":"user123","phoneNumber":"9999999999","message":"Hello World","status":"SUCCESS"}
+
+SMS saved to MongoDB
+```
+
+## Step 8. Retrieve SMS History
+
+Run:
 ```bash
 curl "http://localhost:8081/v1/user/user123/messages"
+```
+Expected Response:
+```json
+[
+  {
+    "userId": "user123",
+    "phoneNumber": "9999999999",
+    "message": "Hello World",
+    "status": "SUCCESS"
+  }
+]
 ```
 
 ---
