@@ -1,0 +1,15 @@
+# Java
+target/
+*.class
+
+# Go
+*.exe
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+data/
